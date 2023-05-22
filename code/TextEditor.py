@@ -49,6 +49,7 @@ class TextEditor:
         self.edit_menu = tk.Menu(self.menu_bar, tearoff=False)
         self.menu_bar.add_cascade(label="Edit", menu=self.edit_menu)
         self.edit_menu.add_command(label="Find", accelerator="Ctrl+F", command=self.search)
+        self.add_word_count_option()
 
         # Bind keyboard shortcuts to the text area
         self.text_area.bind_all("<Control-s>", self.save_file)
@@ -79,6 +80,18 @@ class TextEditor:
         # Disable the line number display
         self.line_numbers.config(state='disabled')
     
+    def get_word_count(self):
+        text = self.text_area.get("1.0", tk.END)
+        words = text.split()
+        return len(words)
+    
+    def display_word_count(self):
+        word_count = self.get_word_count()
+        messagebox.showinfo("Word Count", f"The document contains {word_count} words.")
+
+    def add_word_count_option(self):
+        self.edit_menu.add_command(label="Word Count", command=self.display_word_count)
+
     def scroll_text(self, *args):
         self.text_area.yview_moveto(args[0])
         self.line_numbers.yview_moveto(args[0])
