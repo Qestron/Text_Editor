@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Tk, scrolledtext, Menu, messagebox, filedialog, simpledialog
+from tkinter import Tk, scrolledtext, Menu, messagebox, filedialog, simpledialog, Toplevel, ttk
 
 
 class TextEditor:
@@ -50,6 +50,16 @@ class TextEditor:
         self.menu_bar.add_cascade(label="Edit", menu=self.edit_menu)
         self.edit_menu.add_command(label="Find", accelerator="Ctrl+F", command=self.search)
         self.add_word_count_option()
+
+        # Add Options Menu
+        self.options_menu = tk.Menu(self.menu_bar, tearoff=False)
+        self.menu_bar.add_cascade(label="Options", menu=self.options_menu)
+        self.options_menu.add_command(label="Options...", command=self.show_options_window)
+
+        # Add Themes sub-menu to the Options
+        self.themes_menu = tk.Menu(self.options_menu, tearoff=False)
+        self.options_menu.add_cascade(label="Themes", menu=self.themes_menu)
+        self.add_theme_options()
 
         # Bind keyboard shortcuts to the text area
         self.text_area.bind_all("<Control-s>", self.save_file)
@@ -177,6 +187,67 @@ class TextEditor:
 
         # Configure the search tag to highlight the text
         self.text_area.tag_config("search", background="yellow")
+
+    def show_options_window(self):
+        options_window = Toplevel(self.master)
+        options_window.title("Options")
+        options_window.geometry("800x600")
+
+        # Add options content to the window
+        font_label = ttk.Label(options_window, text="Font:")
+        font_label.pack()
+
+        # Create a StringVar to store the selected font
+        selected_font = tk.StringVar()
+
+        # Define a list of available fonts
+        font_options = ["Arial", "Times New Roman", "Courier New", "Veranda"]
+
+        # Create a font selection dropdown menu
+        font_combobox = ttk.Combobox(options_window, textvariable=selected_font, values=font_options)
+        font_combobox.pack()
+
+        # Set the default font
+        selected_font.set("Arial")
+
+        # Create a button to apply the selected font
+        apply_button = ttk.Button(options_window, text="Apply", command=lambda: self.apply_font(selected_font.get()))
+        apply_button.pack()
+
+    def apply_font(self, selected_font):
+        # Set the font for the text area
+        self.text_area.configure(font=(selected_font, 12)) # Customize the font size as desired
+
+    def show_theme_window(self):
+        theme_window = Toplevel(self.master)
+        theme_window.title("Select Theme")
+        theme_window.geometry("400x300")
+
+        # Create a list of a  available themes
+        theme_options = ["Dark", "Light"]
+
+        # Create a theme selection dropdown menu
+        theme_combobox = ttk.Combobox(theme_window, text="Apply", command=lambda: self.apply_theme(theme_combobox.get()))
+        theme_combobox.pack()
+
+        # Create a button to apply the selected theme
+        apply_button = ttk.Button(theme_window, text="Apply", command=lambda: self.apply_theme(theme_combobox.get()))
+        apply_button.pack()
+
+    def add_theme_options(self):
+        self.themes_menu.add_command(label="Dark", command=lambda: self.apply_theme("Dark"))
+        self.themes_menu.add_command(label="White", command=lambda: self.apply_theme("White"))
+
+    def apply_theme(self, selected_theme):
+        if selected_theme == 'Dark':
+            # Set dark theme
+            self.text_area.configure(background="black", foreground="white")
+        elif selected_theme == 'White':
+            # Set white theme
+            self.text_area.configure(background="white", foreground="black")
+
+    def run(self):
+        self.master.mainloop()
 
 
 if __name__ == '__main__':
