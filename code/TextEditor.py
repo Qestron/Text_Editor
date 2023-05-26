@@ -201,7 +201,7 @@ class TextEditor:
         selected_font = tk.StringVar()
 
         # Define a list of available fonts
-        font_options = ["Arial", "Times New Roman", "Courier New", "Veranda"]
+        font_options = ["Arial", "Times New Roman", "Courier New", "Verdana"]
 
         # Create a font selection dropdown menu
         font_combobox = ttk.Combobox(options_window, textvariable=selected_font, values=font_options)
